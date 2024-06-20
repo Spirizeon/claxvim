@@ -1,308 +1,188 @@
--- leader keymaps
-vim.g.mapleader = " "
-vim.keymap.set("n","<leader>pv",vim.cmd.Ex)
-vim.keymap.set("n","<leader>nt",vim.cmd.Neotree)
-vim.keymap.set("n","<leader>md",vim.cmd.MarkdownPreviewToggle) --only works on md files
-vim.keymap.set("n","<leader>cs","<cmd>Telescope colorscheme<cr>") -- added colorscheme keybind
-vim.cmd('set number')
-vim.cmd('colorscheme default')
-vim.cmd('tnoremap <Esc> <C-/><C-n>') --remap terminal for insert to normal mode
+-- Clax.nvim written by spirizeon (berzi), redxdager 
+-- inspired by Josean Martinez
+-- 2nd rewrite in lazy.nvim
+
+-- keymaps
+vim.g.mapleader = " " 
+local keymap = vim.keymap 
+
+keymap.set("i","jk","<ESC>", { desc = "Exit insert mode with jk" })
+-- keymap.set("mode","keys","result", "descriptioon" )
+keymap.set("n","<leader>pv",vim.cmd.Ex)
+keymap.set("n","<leader>nt",vim.cmd.Neotree)
+keymap.set("n","<leader>md",vim.cmd.MarkdownPreviewToggle) --only works on md files
+keymap.set("n","<leader>cs","<cmd>Telescope colorscheme<cr>") -- added colorscheme keybind
+keymap.set("n","<leader>ff","<cmd>Telescope find_files<cr>") -- find files
+keymap.set("n","<leader>lg","<cmd>Telescope live_grep<cr>") -- find word
+keymap.set("n","<leader>of","<cmd>Telescope oldfiles<cr>") -- recent files
+keymap.set("n","<leader>nf","<cmd>new<cr>") -- new files
+
+
 function open_terminal()
-	-- make vertical split
 	vim.cmd("vsplit")
 	vim.cmd("set nonumber")
-	vim.cmd("cd %:p:h") -- terminal now opens in current directory
+	vim.cmd("cd %:p:h")
 	vim.cmd("terminal")
-	vim.cmd("startinsert") --enter insert mode
-end 
+	vim.cmd("startinsert")
+end
 
-vim.keymap.set("n","<leader>ot","<cmd>lua open_terminal()<cr>")
+keymap.set("n","<leader>ot","<cmd>lua open_terminal()<cr>", { desc="open a vertical terminal with insert mode enabled, type SPACE + o + t"})
+
+-- tab management (inspired by firefox)
+keymap.set("n","<C-t>","<cmd>tabnew<cr>", { desc = "Open new tab" }) -- open new tab
+keymap.set("n","<C-w>","<cmd>tabclose<cr>", { desc = "Close current tab" }) -- open new tab
+keymap.set("n","<C-n>","<cmd>tabn<cr>", { desc = "Go to next tab" }) -- open new tab
 
 
+-- options
+vim.cmd('let g:netrw_liststyle = 3') -- for using tree listing style
+local opt = vim.opt 
 
-local packer = require('packer')
-packer.util = require('packer.util')
+opt.relativenumber = true
+opt.number = true
 
-packer.startup(function()
-  local use = use
-  -- add you plugins here like:
-  -- use 'neovim/nvim-lspconfig'
-   use {
-  'nvim-telescope/telescope.nvim', tag = '0.1.5',
--- or                            , branch = '0.1.x',
-  requires = { {'nvim-lua/plenary.nvim'} }
-      }
-use { "williamboman/mason.nvim"}
-      
-use {
-    "iamcco/markdown-preview.nvim",
-    run = function() vim.fn["mkdp#util#install"]() end,
-}
-   use {
-  'nvim-lualine/lualine.nvim',
-  requires = { 'nvim-tree/nvim-web-devicons', opt = true }
-       }
+-- tabs and indent
+opt.tabstop = 2
+opt.shiftwidth = 2
 
-use { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins' }
-  
-use {"williamboman/mason.nvim"} -- mason
-  use {
-	  'nvim-treesitter/nvim-treesitter',
-	  run = ':TSUpdate'
-      }
+opt.autoindent = true -- copy indent from current line into new one
 
-      use {
+-- search settings
+opt.ignorecase = true -- ignore case
+opt.smartcase = true -- mixed case allowed
+
+opt.cursorline = true -- wtf is this 
+
+opt.background = "dark" 
+opt.termguicolors = true
+opt.signcolumn = "yes" --show sign column so that text doesn't shift
+
+-- clipboard
+opt.clipboard:append("unnamedplus") -- use system clipboard as default register
+
+-- split controls
+opt.splitright = true -- split vertically right
+opt.splitbelow = true -- split horizontally to bottom
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require('lazy').setup({
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function () 
+      local configs = require("nvim-treesitter.configs")
+
+      configs.setup({
+          ensure_installed = { "c", "lua", "vim", "vimdoc", "sql","ssh_config", "python","rust","css", "javascript", "html" },
+          sync_install = true,
+          highlight = { enable = true },
+          indent = { enable = true },  
+        })
+    end
+	 },
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000,
+		config = function()
+			require"startup".setup({
+					flavour = "auto", -- latte, frappe, macchiato, mocha
+						background = { -- :h background
+								light = "latte",
+								dark = "mocha",
+						},
+						transparent_background = true, -- disables setting the background color.
+						show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+						term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+						dim_inactive = {
+								enabled = false, -- dims the background color of inactive window
+								shade = "dark",
+								percentage = 0.15, -- percentage of the shade to apply to the inactive window
+						},
+						no_italic = false, -- Force no italic
+						no_bold = false, -- Force no bold
+						no_underline = false, -- Force no underline
+						styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+								comments = { "italic" }, -- Change the style of comments
+								conditionals = { "italic" },
+								loops = {},
+								functions = {},
+								keywords = {},
+								strings = {},
+								variables = {},
+								numbers = {},
+								booleans = {},
+								properties = {},
+								types = {},
+								operators = {},
+								-- miscs = {}, -- Uncomment to turn off hard-coded styles
+						},
+						color_overrides = {},
+						custom_highlights = {},
+						default_integrations = true,
+						integrations = {
+								cmp = true,
+								gitsigns = true,
+								nvimtree = true,
+								treesitter = true,
+								notify = false,
+								mini = {
+										enabled = true,
+										indentscope_color = "",
+								},
+								-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+						},
+				})
+		end
+	},
+	{ "williamboman/mason.nvim" }, -- lsps
+	{ "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
+
+	{
+		'nvim-lua/plenary.nvim',
+	},
+  {
   "startup-nvim/startup.nvim",
   requires = {"nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim"},
   config = function()
-    require"startup".setup({theme = 'clax'})
+    require"startup".setup({theme="clax"})
   end
-}
-
-use {
-	"L3MON4D3/LuaSnip",
-	-- follow latest release.
-	tag = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-	-- install jsregexp (optional!:).
-	run = "make install_jsregexp"
-}
-use {"hrsh7th/nvim-cmp"} --completion plugin
-use {"hrsh7th/cmp-buffer"} --source for text in buffer
-use {"hrsh7th/cmp-path"} --source for file system paths
-use{"saadparwaiz1/cmp_luasnip"} -- for autocompletion
-use{"rafamadriz/friendly-snippets"} -- useful snippets
-use {
-	"windwp/nvim-autopairs",
-    config = function() require("nvim-autopairs").setup {} end
-}
-use { 'nvim-tree/nvim-web-devicons'}
-use {'romgrk/barbar.nvim'}
-
-use 'andweeb/presence.nvim'
-use { 
-	"nvim-neo-tree/neo-tree.nvim",
-	branch = "v3.x",
-	requires = {
-		"nvim-lua/plenary.nvim",
-		"MunifTanjim/nui.nvim",
-	}
-}
-
-  end
-)
-
--- keymaps
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-vim.keymap.set('n', '<leader>lg', builtin.live_grep, {})
-vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-vim.keymap.set('n', '<leader>of', builtin.oldfiles, {})
-vim.keymap.set('n', '<leader>nf', vim.cmd.new, {})
-
-
--- treesitter config
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "c", "lua", "vim", "python", "javascript", "typescript", "bash", "go", "rust","html","css", },
-
-  sync_install = false,
-  auto_install = true,
-  highlight = {
-    enable = true,
-
-   additional_vim_regex_highlighting = false,
   },
-}
+	{
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    }
+	},
+
+	{
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+	},
+  {
+    'nvim-telescope/telescope.nvim', tag = '0.1.6',
+-- or                              , branch = '0.1.x',
+      dependencies = { 'nvim-lua/plenary.nvim' }
+	},
 
 
--- import nvim-cmp plugin safely
-local cmp_status, cmp = pcall(require, "cmp")
-if not cmp_status then
-  return
-end
-
--- import luasnip plugin safely
-local luasnip_status, luasnip = pcall(require, "luasnip")
-if not luasnip_status then
-  return
-end
-
--- load VSCode-like snippets from plugins (e.g., friendly-snippets)
-
-
-require("luasnip/loaders/from_vscode").lazy_load()
-
-vim.opt.completeopt = "menu,menuone,noselect"
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-    ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-    ["<C-e>"] = cmp.mapping.abort(), -- close completion window
-    ["<CR>"] = cmp.mapping.confirm({ select = false }),
-  }),
-  -- sources for autocompletion
-  sources = cmp.config.sources({
-    { name = "nvim_lsp" }, -- LSP
-    { name = "luasnip" }, -- snippets
-    { name = "buffer" }, -- text within the current buffer
-    { name = "path" }, -- file system paths
-  }),
+	
 })
 
-
--- Load friendly snippets
-require("luasnip/loaders/from_vscode").lazy_load()
-
--- HTML snippets
-local html_snippets = {
-    htmldoc = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>${1:Title}</title>\n</head>\n<body>\n\t$0\n</body>\n</html>",
-    div = "<div>${0}</div>",
-    span = "<span>${0}</span>",
-    a = "<a href=\"${1:#}\">${2:Link}</a>",
-    img = "<img src=\"${1:path/to/image}\" alt=\"${2:Alt text}\">",
-    input = "<input type=\"${1:text}\" name=\"${2:name}\" id=\"${3:id}\"${4: value=\"${5:}\"}>",
-    -- Add more HTML snippets as needed
-}
-
--- React.js snippets
-local react_snippets = {
-    rfce = "import React from 'react';\n\nfunction ${1:ComponentName}() {\n\treturn (\n\t\t<div>\n\t\t\t$0\n\t\t</div>\n\t);\n}\n\nexport default ${1:ComponentName};",
-    useState = "const [${1:state}, set${2:State}] = React.useState(${3:initialState});",
-    useEffect = "React.useEffect(() => {\n\t$0\n}, []);",
-    -- Add more React.js snippets as needed
-}
-
--- Next.js snippets
-local nextjs_snippets = {
-    nextpage = "import React from 'react';\nimport Head from 'next/head';\n\nfunction ${1:PageName}() {\n\treturn (\n\t\t<div>\n\t\t\t<Head>\n\t\t\t\t<title>${2:Page Title}</title>\n\t\t\t</Head>\n\t\t\t$0\n\t\t</div>\n\t);\n}\n\nexport default ${1:PageName};",
-    -- Add more Next.js snippets as needed
-}
-
--- JSX/TSX snippets
-local jsx_tsx_snippets = {
-    tsxdoc = "import React from 'react';\n\ninterface Props {\n\t$0\n}\n\nconst ${1:ComponentName}: React.FC<Props> = ({ $2 }) => {\n\treturn (\n\t\t<div>\n\t\t\t$3\n\t\t</div>\n\t);\n};\n\nexport default ${1:ComponentName};",
-    -- Add more JSX/TSX snippets as needed
-}
-
--- Add HTML snippets
-for trigger, snippet in pairs(html_snippets) do
-    luasnip.snippets[trigger] = luasnip.parser.parse_snippet({ trig = trigger, wordTrig = true }, snippet)
-end
-
--- Add React.js snippets
-for trigger, snippet in pairs(react_snippets) do
-    luasnip.snippets[trigger] = luasnip.parser.parse_snippet({ trig = trigger, wordTrig = true }, snippet)
-end
-
--- Add Next.js snippets
-for trigger, snippet in pairs(nextjs_snippets) do
-    luasnip.snippets[trigger] = luasnip.parser.parse_snippet({ trig = trigger, wordTrig = true }, snippet)
-end
-
--- Add JSX/TSX snippets
-for trigger, snippet in pairs(jsx_tsx_snippets) do
-    luasnip.snippets[trigger] = luasnip.parser.parse_snippet({ trig = trigger, wordTrig = true }, snippet)
-end
-
-
-
--- barbar config
-local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
-
--- Move to previous/next
-map('n', '<A-,>', '<Cmd>BufferPrevious<CR>', opts)
-map('n', '<A-.>', '<Cmd>BufferNext<CR>', opts)
--- Re-order to previous/next
-map('n', '<A-<>', '<Cmd>BufferMovePrevious<CR>', opts)
-map('n', '<A->>', '<Cmd>BufferMoveNext<CR>', opts)
--- Goto buffer in position...
-map('n', '<A-1>', '<Cmd>BufferGoto 1<CR>', opts)
-map('n', '<A-2>', '<Cmd>BufferGoto 2<CR>', opts)
-map('n', '<A-3>', '<Cmd>BufferGoto 3<CR>', opts)
-map('n', '<A-4>', '<Cmd>BufferGoto 4<CR>', opts)
-map('n', '<A-5>', '<Cmd>BufferGoto 5<CR>', opts)
-map('n', '<A-6>', '<Cmd>BufferGoto 6<CR>', opts)
-map('n', '<A-7>', '<Cmd>BufferGoto 7<CR>', opts)
-map('n', '<A-8>', '<Cmd>BufferGoto 8<CR>', opts)
-map('n', '<A-9>', '<Cmd>BufferGoto 9<CR>', opts)
-map('n', '<A-0>', '<Cmd>BufferLast<CR>', opts)
--- Pin/unpin buffer
-map('n', '<A-p>', '<Cmd>BufferPin<CR>', opts)
--- Close buffer
-map('n', '<A-c>', '<Cmd>BufferClose<CR>', opts)
--- Wipeout buffer
---                 :BufferWipeout
--- Close commands
---                 :BufferCloseAllButCurrent
---                 :BufferCloseAllButPinned
---                 :BufferCloseAllButCurrentOrPinned
---                 :BufferCloseBuffersLeft
---                 :BufferCloseBuffersRight
--- Magic buffer-picking mode
-map('n', '<C-p>', '<Cmd>BufferPick<CR>', opts)
--- Sort automatically by...
-map('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', opts)
-map('n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>', opts)
-map('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>', opts)
-map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', opts)
-
--- Other:
--- :BarbarEnable - enables barbar (enabled by default)
--- :BarbarDisable - very bad command, should never be used
---
---
---
---
--- lualine config
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    theme = 'gruvbox-material',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
-    disabled_filetypes = {
-      statusline = {},
-      winbar = {},
-    },
-    ignore_focus = {},
-    always_divide_middle = true,
-    globalstatus = false,
-    refresh = {
-      statusline = 1000,
-      tabline = 1000,
-      winbar = 1000,
-    }
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
-    lualine_y = {},
-    lualine_z = {}
-  },
-  tabline = {},
-  winbar = {},
-  inactive_winbar = {},
-  extensions = {}
-}
-
--- mason 
-require("mason").setup()
+vim.cmd("colorscheme catppuccin") -- set default colorscheme
+vim.cmd('highlight Normal guibg=NONE ctermbg=NONE') -- set background transparent

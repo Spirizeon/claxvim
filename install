@@ -1,0 +1,15 @@
+#!/bin/bash
+rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
+mkdir ~/.config/nvim 2>/dev/null
+cp init.lua ~/.config/nvim
+echo "👋 Hi! Thanks for trying out Clax.nvim"
+echo "========================================="
+echo "✅ Config updated :)"
+echo "😎 Loading things up (gonna take some seconds)..."
+nvim --headless -c "Lazy sync" -c "qa"
+echo "✅ Plugins loaded :)"
+cp clax.lua ~/.local/share/nvim/lazy/startup.nvim/lua/startup/themes
+echo "✅ Dashboard loaded :)"
+echo "========================================="
+echo "👍 Clax.nvim is ready, you can now type nvim"
+
