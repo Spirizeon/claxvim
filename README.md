@@ -1,4 +1,5 @@
-![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/ac9a985b-51d1-4590-84df-9df411755acf)
+![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/3f9d5579-8cfa-4559-8fb3-18e7f2909578)
+
 
 
 # Clax.nvim - Lightning fast, Lightweight Neovim Distribution
