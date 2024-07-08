@@ -1,7 +1,6 @@
 -- Clax.nvim written by spirizeon (berzi), redxdager 
 -- inspired by Josean Martinez
 -- 2nd rewrite in lazy.nvim
-
 -- keymaps
 vim.g.mapleader = " " 
 local keymap = vim.keymap 
@@ -92,6 +91,53 @@ require('lazy').setup({
         })
     end
 	 },
+	-- lualine
+	{
+    'nvim-lualine/lualine.nvim',
+     dependencies = { 'nvim-tree/nvim-web-devicons' },
+		 config = function()
+				require"startup".setup({
+				options = {
+					icons_enabled = true,
+					theme = 'gruvbox-material',
+					component_separators = { left = '', right = ''},
+					section_separators = { left = '', right = ''},
+					disabled_filetypes = {
+						statusline = {},
+						winbar = {},
+					},
+					ignore_focus = {},
+					always_divide_middle = true,
+					globalstatus = false,
+					refresh = {
+						statusline = 1000,
+						tabline = 1000,
+						winbar = 1000,
+					}
+				},
+				sections = {
+					lualine_a = {'mode'},
+					lualine_b = {'branch', 'diff', 'diagnostics'},
+					lualine_c = {'filename'},
+					lualine_x = {'encoding', 'fileformat', 'filetype'},
+					lualine_y = {'progress'},
+					lualine_z = {'location'}
+				},
+				inactive_sections = {
+					lualine_a = {},
+					lualine_b = {},
+					lualine_c = {'filename'},
+					lualine_x = {'location'},
+					lualine_y = {},
+					lualine_z = {}
+				},
+				tabline = {},
+				winbar = {},
+				inactive_winbar = {},
+				extensions = {}
+			})
+		end
+	},
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000,
 		config = function()
 			require"startup".setup({
@@ -144,6 +190,7 @@ require('lazy').setup({
 				})
 		end
 	},
+	{ 'andweeb/presence.nvim' }, --discord rich presence
 	{ "williamboman/mason.nvim" }, -- lsps
 	{ "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
 
@@ -167,7 +214,7 @@ require('lazy').setup({
       -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
     }
 	},
-
+	{'neoclide/coc.nvim', branch = 'release'},
 	{
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
@@ -180,8 +227,13 @@ require('lazy').setup({
       dependencies = { 'nvim-lua/plenary.nvim' }
 	},
 
-
-	
+	{
+			'windwp/nvim-autopairs',
+			event = "InsertEnter",
+			config = true
+			-- use opts = {} for passing setup options
+			-- this is equalent to setup({}) function
+	},
 })
 
 vim.cmd("colorscheme catppuccin") -- set default colorscheme
