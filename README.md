@@ -1,4 +1,5 @@
-![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/3f9d5579-8cfa-4559-8fb3-18e7f2909578)
+![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/7f27f8e4-0152-483a-a4eb-51289ba05a6d)
+
 
 
 
