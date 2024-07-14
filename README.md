@@ -1,35 +1,26 @@
 ![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/7f27f8e4-0152-483a-a4eb-51289ba05a6d)
 
 
+<div align="center">
 
-
-# Clax.nvim - Lightning fast, Lightweight Neovim Distribution
-
-Welcome to Clax.nvim, your ultimate Neovim distribution for a seamless and efficient editing experience. This distribution is built for speed, with a lightweight design tailored for both beginners and experts. Clax.nvim leverages the power of Packer.nvim to make plugin management easy and customizable.
+# ClaxVim
+Distributable neovim config written in Lua, Lazy.nvim and Shell.Built from scratch, has all the features of a modern IDE
 
 > This project is dedicated to my friend "Clax", in a stupid attempt to make him install Arch Linux (Lol)
 
-## Features:
-
-- **Blazing Speed:** Clax.nvim is optimized for speed, ensuring a snappy and responsive editing environment, even for large codebases.
-  
-- **Lightweight:** Enjoy the power of Neovim without unnecessary bloat. Clax.nvim keeps things minimal, providing a streamlined setup for both performance and simplicity.
-
-- **User-Friendly:** Designed with beginners in mind, Clax.nvim offers an intuitive configuration that's easy to understand and use right out of the box.
-
-- **Customizable:** Tailor your Neovim experience to your preferences with extensive customization options. Whether you're a minimalist or a power user, Clax.nvim adapts to your workflow.
+</div>
 
 ## Installation:
 
 Simply run this install script
 ```
+
 cd clax.nvim
 chmod +x install
 ./install
 ```
+![image](https://github.com/user-attachments/assets/01bb575c-378e-4d9f-92a9-74396d2e04bb)
 
-## Configuration:
-![image](https://github.com/Spirizeon/clax.nvim/assets/123345456/270963a6-e8bc-45d4-b161-98ad895e5fc9)
 
 ### Keybinds
 Here's a table of keybinds from your Lua file for the Neovim config:
@@ -72,8 +63,4 @@ rm -rf ~/.config/nvim ~/.local/share/nvim
 ## Contribute:
 
 We welcome contributions! Whether it's bug fixes, new features, or optimizations, feel free to open issues and pull requests.
-
-Join our growing community and make Clax.nvim even better!
-
-Happy coding! 🚀
 
