@@ -1,6 +1,7 @@
 #!/bin/bash
 rm -rf ~/.config/nvim ~/.local/share/nvim 2>/dev/null
 mkdir ~/.config/nvim 2>/dev/null
+set -e
 cp init.lua ~/.config/nvim
 echo "👋 Hi! Thanks for trying out Clax.nvim"
 echo "========================================="
