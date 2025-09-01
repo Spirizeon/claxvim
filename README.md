@@ -4,6 +4,7 @@
 <div align="center">
 
 # ClaxVim
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/spirizeon/claxvim/badge)](https://scorecard.dev/viewer/?uri=github.com/spirizeon/claxvim)
 Distributable neovim config written in Lua, Lazy.nvim and Shell.Built from scratch, has all the features of a modern IDE
 
 > This project is dedicated to my friend "Clax", in a stupid attempt to make him install Arch Linux (Lol)
